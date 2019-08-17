@@ -15,7 +15,7 @@ public class Server {
 	 * main() is used to start an instance of the Server
 	 */
 	public static void main(String... args) throws Exception {
-		new ActualMailServer().something(new FileEmailListReader(), args);
+		new ActualMailServer(new EmailMessageSender()).something(new FileEmailListReader(), new SessionStoreProvider(), args);
 		return;
 	}
 
