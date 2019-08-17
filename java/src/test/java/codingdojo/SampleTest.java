@@ -2,12 +2,11 @@ package codingdojo;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class SampleTest {
     @Test
-    void sample() {
-        assertEquals(true, false);
+    void sample() throws Exception {
+        ActualMailServer server = new ActualMailServer();
+        server.something(new FileEmailListReader(), "smtp.host.com", "pop3.host.com", "user", "password", "file.txt", "1");
     }
 
 }
