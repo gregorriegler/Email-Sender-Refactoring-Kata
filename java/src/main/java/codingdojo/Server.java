@@ -198,7 +198,7 @@ public class Server {
 
                         // Send newMessage
                         //
-                        Transport transport = session1.getTransport(Server.SMTP_MAIL);
+                        Transport transport = createSendTransport(session1);
                         transport.connect(_smtpHost, _user, _password);
                         transport.sendMessage(newMessage, toList);
                     }
@@ -234,8 +234,11 @@ public class Server {
         return session.getStore(Server.POP_MAIL);
     }
 
+    /*test*/ Transport createSendTransport(Session session1) throws NoSuchProviderException {
+        return session1.getTransport(Server.SMTP_MAIL);
+    }
+
     /*test*/ Session createWritingSession(Properties props) {
         return Session.getDefaultInstance(props, null);
     }
-
 }
