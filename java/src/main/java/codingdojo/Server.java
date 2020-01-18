@@ -13,8 +13,10 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
@@ -74,7 +76,7 @@ public class Server {
             // Read in email list file into java.util.Vector
             //
             Vector vList = new Vector(10);
-            BufferedReader listFile = new BufferedReader(new FileReader(emailListFile));
+            BufferedReader listFile = new BufferedReader(createEmailListReader(emailListFile));
             String line = null;
             while ((line = listFile.readLine()) != null) {
                 vList.addElement(new InternetAddress(line));
@@ -212,5 +214,9 @@ public class Server {
                     + " minutes)");
             Thread.sleep(checkPeriod * 1000 * 60);
         }
+    }
+
+    public Reader createEmailListReader(String emailListFile) throws FileNotFoundException {
+        return new FileReader(emailListFile);
     }
 }
