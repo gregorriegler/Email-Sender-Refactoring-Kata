@@ -14,6 +14,7 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,8 +42,10 @@ public class SampleTest {
         Folder inboxFolder = mock(Folder.class);
         when(defaultFolder.getFolder("INBOX")).thenReturn(inboxFolder);
         Message message = mock(Message.class);
-        when(inboxFolder.getMessages()).thenReturn(new Message[]{ message });
+        when(inboxFolder.getMessages()).thenReturn(new Message[]{message});
         when(message.getContent()).thenReturn("MessageContent");
+        when(message.getFrom()).thenReturn(new Address[]{new InternetAddress("from@mail.com")});
+        when(message.getHeader("X-Mailer")).thenReturn(new String[]{"MailerHeader"});
         Transport sendTransport = mock(Transport.class);
 
         Server server = new Server() {
@@ -77,6 +80,16 @@ public class SampleTest {
             }
         };
         server.doSomething("smtphost", "pop3Host", "user", "password", "listFileName", "fromName", 0);
+
+        // TODO missing assertion:
+        // verify because this is the required functionality?
+        // transport.sendMessage(newMessage, toList);
+        // messages[i].setFlag(Flags.Flag.DELETED, true);
+
     }
+
+    // TODO process more than one message
+    // TODO second test with no fromName
+    // TODO second test with multipart message
 
 }
