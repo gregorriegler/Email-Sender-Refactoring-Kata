@@ -25,7 +25,6 @@ import java.util.Vector;
 public class Server {
     private static final String INBOX = "INBOX", POP_MAIL = "pop3",
         SMTP_MAIL = "smtp";
-    /*test*/ boolean keepRunning = true;
     private boolean debugOn = false;
     private String _smtpHost = null, _pop3Host = null, _user = null,
         _password = null, _listFile = null, _fromName = null;
@@ -62,7 +61,7 @@ public class Server {
     public void doSomething(String smtpHost, String pop3Host, String user, String password, String emailListFile, String fromName, int checkPeriod) throws IOException, MessagingException, InterruptedException {
         debugOn = false;
 
-        while (keepRunning) {
+        while (keepRunning()) {
             if (debugOn)
                 System.out.println(new Date() + "> " + "SESSION START");
             _smtpHost = smtpHost;
@@ -124,7 +123,7 @@ public class Server {
                     System.out.println(new Date() + "> " + folder + " is empty");
                 folder.close(false);
                 store.close();
-                done = true;
+                done = keepRunning();
             }
 
             if (!done) {
@@ -212,8 +211,12 @@ public class Server {
             if (debugOn)
                 System.out.println(new Date() + "> " + "SESSION END (Going to sleep for " + checkPeriod
                     + " minutes)");
-            sleep(checkPeriod);
+            Thread.sleep(checkPeriod * 1000 * 60);
         }
+    }
+
+    /*test*/ boolean keepRunning() {
+        return true;
     }
 
     /*test*/ Reader createEmailListReader(String emailListFile) throws FileNotFoundException {
@@ -229,7 +232,4 @@ public class Server {
         return Session.getDefaultInstance(props, null);
     }
 
-    /*test*/ void sleep(int checkPeriod) throws InterruptedException {
-        Thread.sleep(checkPeriod * 1000 * 60);
-    }
 }
