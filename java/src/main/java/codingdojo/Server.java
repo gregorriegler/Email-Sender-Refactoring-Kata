@@ -7,6 +7,7 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.Transport;
@@ -96,11 +97,10 @@ public class Server {
             // Get a Session object
             //
             Session session = createReadingSession();
-            session.setDebug(debugOn);
 
             // Connect to host
             //
-            Store store = session.getStore(Server.POP_MAIL);
+            Store store = createReadingStore(session);
             store.connect(pop3Host, -1, _user, _password);
 
             // Open the default folder
@@ -225,7 +225,13 @@ public class Server {
 
     /*test*/ Session createReadingSession() {
         Properties sysProperties = System.getProperties();
-        return Session.getDefaultInstance(sysProperties, null);
+        Session session = Session.getDefaultInstance(sysProperties, null);
+        session.setDebug(debugOn);
+        return session;
+    }
+
+    /*test*/ Store createReadingStore(Session session) throws NoSuchProviderException {
+        return session.getStore(Server.POP_MAIL);
     }
 
     /*test*/ Session createWritingSession(Properties props) {
