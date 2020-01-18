@@ -82,6 +82,7 @@ public class SampleTest {
         server.doSomething("smtphost", "pop3Host", "user", "password", "listFileName", "fromName", 0);
 
         // TODO missing assertion:
+        // verify connect
         // verify because this is the required functionality?
         // transport.sendMessage(newMessage, toList);
         // messages[i].setFlag(Flags.Flag.DELETED, true);
