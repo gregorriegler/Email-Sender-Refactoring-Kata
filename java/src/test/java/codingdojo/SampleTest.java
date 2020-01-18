@@ -3,9 +3,14 @@ package codingdojo;
 import org.junit.jupiter.api.Test;
 
 import javax.mail.MessagingException;
+import javax.mail.Session;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
 
 public class SampleTest {
 
@@ -14,10 +19,22 @@ public class SampleTest {
     @Test
     void tbd() throws InterruptedException, MessagingException, IOException {
 
+        Session mockedPop3Session = mock(Session.class);
+
         Server server = new Server() {
             @Override
             boolean keepRunning() {
                 return countCalls++ == 0;
+            }
+
+            @Override
+            Reader createEmailListReader(String emailListFile) throws FileNotFoundException {
+                return new StringReader("peter@biz.com\n");
+            }
+
+            @Override
+            Session createReadingSession() {
+                return mockedPop3Session;
             }
         };
         server.doSomething("smtphost", "pop3Host", "user", "password", "listFileName", "fromName", 0);
