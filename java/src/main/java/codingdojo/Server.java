@@ -25,6 +25,7 @@ import java.util.Vector;
 public class Server {
     private static final String INBOX = "INBOX", POP_MAIL = "pop3",
         SMTP_MAIL = "smtp";
+    /*test*/ boolean keepRunning = true;
     private boolean debugOn = false;
     private String _smtpHost = null, _pop3Host = null, _user = null,
         _password = null, _listFile = null, _fromName = null;
@@ -61,7 +62,7 @@ public class Server {
     public void doSomething(String smtpHost, String pop3Host, String user, String password, String emailListFile, String fromName, int checkPeriod) throws IOException, MessagingException, InterruptedException {
         debugOn = false;
 
-        while (true) {
+        while (keepRunning) {
             if (debugOn)
                 System.out.println(new Date() + "> " + "SESSION START");
             _smtpHost = smtpHost;
@@ -95,8 +96,7 @@ public class Server {
 
             // Get a Session object
             //
-            Properties sysProperties = System.getProperties();
-            Session session = Session.getDefaultInstance(sysProperties, null);
+            Session session = createReadingSession();
             session.setDebug(debugOn);
 
             // Connect to host
@@ -166,7 +166,7 @@ public class Server {
                         //
                         Properties props = new Properties();
                         props.put("mail.smtp.host", _smtpHost);
-                        Session session1 = Session.getDefaultInstance(props, null);
+                        Session session1 = createWritingSession(props);
 
                         // create a message
                         //
@@ -212,11 +212,24 @@ public class Server {
             if (debugOn)
                 System.out.println(new Date() + "> " + "SESSION END (Going to sleep for " + checkPeriod
                     + " minutes)");
-            Thread.sleep(checkPeriod * 1000 * 60);
+            sleep(checkPeriod);
         }
     }
 
-    public Reader createEmailListReader(String emailListFile) throws FileNotFoundException {
+    /*test*/ Reader createEmailListReader(String emailListFile) throws FileNotFoundException {
         return new FileReader(emailListFile);
+    }
+
+    /*test*/ Session createReadingSession() {
+        Properties sysProperties = System.getProperties();
+        return Session.getDefaultInstance(sysProperties, null);
+    }
+
+    /*test*/ Session createWritingSession(Properties props) {
+        return Session.getDefaultInstance(props, null);
+    }
+
+    /*test*/ void sleep(int checkPeriod) throws InterruptedException {
+        Thread.sleep(checkPeriod * 1000 * 60);
     }
 }
